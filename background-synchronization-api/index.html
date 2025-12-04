@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Background Sync Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        #output { margin-top: 20px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>Background Synchronization API Example</h1>
+    <p>This example registers a sync request that runs when the network is available.</p>
+    <p>⭐ **Test Instructions:** Click the button, then go **offline** in your DevTools (Network tab), refresh the page, and then go **online** again. Watch the console for the sync event!</p>
+    
+    <button id="syncButton">Register Background Sync</button>
+    <div id="output">Status: Waiting for action...</div>
+
+    <script src="main.js"></script>
+</body>
+</html>
