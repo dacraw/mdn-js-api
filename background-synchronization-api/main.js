@@ -12,29 +12,39 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// 2. Requesting a Background Sync
+// main.js (Refined support check)
 async function syncMessagesLater() {
     const output = document.getElementById('output');
-    output.textContent = 'Attempting to register background sync...';
-
-    if (!('serviceWorker' in navigator) || !('sync' in navigator.serviceWorker.ready)) {
-        output.textContent = 'Error: Background Sync API not supported or SW not ready.';
-        console.error('Background Sync API not supported.');
+    
+    // Check 1: Is Service Worker supported at all?
+    if (!('serviceWorker' in navigator)) {
+        output.textContent = 'Error: Service Workers not supported.';
+        console.error('Service Workers not supported.');
         return;
     }
 
     try {
         const registration = await navigator.serviceWorker.ready;
-        // Register a sync event with a unique tag
+        
+        // Check 2: Is the SyncManager available on this specific registration object?
+        // The property you are looking for is registration.sync
+        if (!registration.sync) { 
+            // This is the error-catching block for your specific problem
+            output.textContent = 'Error: Background Sync API (SyncManager) is not available on this registration.';
+            console.error('Background Sync API is not available, even though the Service Worker is ready.');
+            return;
+        }
+
+        // If we reach here, the API is supported and ready to use
+        output.textContent = 'Attempting to register background sync...';
         await registration.sync.register("sync-messages");
         
         output.textContent = 'Background Sync "sync-messages" registered successfully!';
-        console.log("🔔 Background Sync 'sync-messages' registered.");
-        console.log("If offline, the sync event will fire when the network is restored.");
+        console.log("🔔 Background Sync 'sync-messages' registered successfully.");
 
     } catch (e) {
-        output.textContent = 'Background Sync could not be registered! (Requires HTTPS or localhost)';
-        console.error("Background Sync could not be registered:", e);
+        output.textContent = 'Background Sync registration failed (Final Catch).';
+        console.error("Background Sync registration failed:", e);
     }
 }
 

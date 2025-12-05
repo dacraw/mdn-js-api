@@ -5,8 +5,10 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-    console.log('[SW] Activating...');
-    event.waitUntil(self.clients.claim());
+    console.log('[SW] Activating Service Worker...');
+    // This method makes the Service Worker take control of all clients 
+    // in its scope immediately, including the current page.
+    event.waitUntil(self.clients.claim()); 
 });
 
 // --- Background Sync Handler Function ---
