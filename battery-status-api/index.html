@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery Status API Example</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .status-box { 
+            border: 1px solid #ccc; 
+            padding: 15px; 
+            margin-top: 20px; 
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Battery Status</h1>
+    <p>Loading battery information...</p>
+
+    <div class="status-box">
+        <p><strong>Charging Status:</strong> <span id="charging-info">N/A</span></p>
+        <p><strong>Battery Level:</strong> <span id="level-info">N/A</span></p>
+        <p><strong>Time Until Full Charge:</strong> <span id="charging-time-info">N/A</span></p>
+        <p><strong>Time Until Empty:</strong> <span id="discharging-time-info">N/A</span></p>
+    </div>
+
+    <script>
+        function displayBatteryInfo(battery) {
+            const level = (battery.level * 100).toFixed(0);
+            const charging = battery.charging;
+            
+            // Convert time in seconds to human-readable format (H:MM:SS)
+            function formatTime(seconds) {
+                if (seconds === Infinity) return 'Not discharging';
+                if (seconds === 0) return 'Fully charged';
+                
+                const h = Math.floor(seconds / 3600);
+                const m = Math.floor((seconds % 3600) / 60);
+                const s = Math.floor(seconds % 60);
+                
+                const parts = [h, m, s].map(v => v.toString().padStart(2, '0'));
+                return parts.join(':');
+            }
+
+            document.getElementById('charging-info').textContent = charging ? 'Yes (Plugged In)' : 'No (On Battery)';
+            document.getElementById('level-info').textContent = `${level}%`;
+            document.getElementById('charging-time-info').textContent = formatTime(battery.chargingTime);
+            document.getElementById('discharging-time-info').textContent = formatTime(battery.dischargingTime);
+        }
+
+        // Main function to initialize the API
+        function initBatteryAPI() {
+            if ('getBattery' in navigator) {
+                // Get the BatteryManager object via a Promise
+                navigator.getBattery().then((battery) => {
+                    // 1. Initial status update
+                    displayBatteryInfo(battery);
+
+                    // 2. Set up event listeners to monitor changes
+                    battery.addEventListener('chargingchange', () => {
+                        displayBatteryInfo(battery);
+                    });
+                    
+                    battery.addEventListener('levelchange', () => {
+                        displayBatteryInfo(battery);
+                    });
+                    
+                    battery.addEventListener('chargingtimechange', () => {
+                        displayBatteryInfo(battery);
+                    });
+                    
+                    battery.addEventListener('dischargingtimechange', () => {
+                        displayBatteryInfo(battery);
+                    });
+                    
+                    document.querySelector('p').textContent = 'Battery information loaded:';
+
+                }).catch(error => {
+                    // This often catches the SecurityError if not running on a secure context
+                    document.querySelector('p').textContent = 'Error: Could not access battery status. ' + (error.name === 'SecurityError' ? 'This API usually requires a secure context (HTTPS) or localhost.' : error.message);
+                });
+            } else {
+                document.querySelector('p').textContent = "Battery Status API is not supported by your browser or operating system.";
+            }
+        }
+
+        // Start the process when the page loads
+        initBatteryAPI();
+    </script>
+
+</body>
+</html>
