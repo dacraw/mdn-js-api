@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Worker Data Processor</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .test-box { border-radius: 5px; padding: 15px; margin-bottom: 20px; }
+        #ui-test { border: 1px solid blue; background-color: #e6f0ff; }
+        #worker-test { border: 1px solid green; background-color: #e6ffe6; }
+    </style>
+</head>
+<body>
+    <h1>Web Worker Demo: Background Data Processing</h1>
+    
+    <div id="ui-test" class="test-box">
+        <h2>UI Responsiveness Test (Main Thread)</h2>
+        <p>This counter proves the main thread is NOT blocked.</p>
+        <button id="count-button">Click Me!</button>
+        <p>Count: <span id="count-display">0</span></p>
+    </div>
+
+    <div id="worker-test" class="test-box">
+        <h2>Background Data Processing (Worker Thread)</h2>
+        <button id="load-button">Load & Process Data</button>
+        <p>Status: <span id="status-display">Ready.</span></p>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
