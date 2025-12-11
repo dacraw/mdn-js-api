@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Worker Demo: Transferable Objects</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+        .test-box { border: 2px solid #5cb85c; border-radius: 5px; padding: 20px; margin-bottom: 30px; background-color: #f9fff9; }
+        pre { background-color: #eee; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Example 3: Transferring Large Binary Data (Transferable Objects)</h1>
+        
+        <p>This demo creates a large 32MB data buffer on the main thread and instantly transfers its ownership to the Web Worker for processing, demonstrating zero-copy performance. Check your **Browser Console** to see the `byteLength` change (drop to 0) before and after the transfer.</p>
+
+        <div class="test-box">
+            <h2>Start Zero-Copy Transfer</h2>
+            <button id="transfer-button">Transfer & Process 32MB Buffer</button>
+            <p>Look at the Console after clicking!</p>
+        </div>
+
+        <h2>What to Look For in the Console:</h2>
+        
+        <p>You should see a sequence like this, proving the transfer (not copy) happened:</p>
+        
+        <pre>
+            Main: Buffer size before transfer: 33554432 bytes
+            Main: Buffer size after transfer: 0 bytes  <-- **The buffer is NEUTERED on the main thread!**
+            Main: Successfully transferred. Accessing view failed: TypeError: Cannot access detached ArrayBuffer.
+            Worker: Buffer received, size: 33554432 bytes
+            Worker: Data processing complete. Transferring back...
+            Main: Buffer received back from worker.
+            Main: Received buffer size: 33554432 bytes
+            Main: Last element (processed) is: [A calculated number]  <-- The data is back and usable.
+        </pre>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
